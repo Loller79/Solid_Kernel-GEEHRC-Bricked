@@ -378,6 +378,12 @@ EXPORT_SYMBOL_GPL(device_set_wakeup_enable);
  */
 static void wakeup_source_activate(struct wakeup_source *ws)
 {
+	/*
+	 * active wakeup source should bring the system
+	 * out of PM_SUSPEND_FREEZE state
+	 */
+	freeze_wake();
+
 	if (!enable_msm_hsic_ws && !strcmp(ws->name, "msm_hsic_host")) {
 		pr_info("wakeup source msm_hsic_host activate skipped\n");
 		return;
