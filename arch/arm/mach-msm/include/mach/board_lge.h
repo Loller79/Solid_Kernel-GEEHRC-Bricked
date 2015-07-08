@@ -50,6 +50,13 @@ typedef enum {
 
 hw_rev_type lge_get_board_revno(void);
 
+#ifdef CONFIG_LCD_KCAL
+struct kcal_data {
+	int red;
+	int green;
+	int blue;
+};
+
 #ifdef CONFIG_LGE_PM
 /*Classified the ADC value for cable detection */
 typedef enum {
@@ -107,6 +114,24 @@ struct kcal_platform_data {
 	int (*get_values) (int *r, int *g, int *b);
 	int (*refresh_display) (void);
 };
+#endif
+
+#ifdef CONFIG_LGE_PM
+/* LGE_S kwangjae1.lee@lge.com 2012-06-11 Add bms debugger */
+struct bms_batt_info_type{
+	int mode;
+};
+/* LGE_E kwangjae1.lee@lge.com 2012-06-11 Add bms debugger */
+struct pseudo_batt_info_type {
+	int mode;
+	int id;
+	int therm;
+	int temp;
+	int volt;
+	int capacity;
+	int charging;
+};
+#endif
 
 int __init lge_get_uart_mode(void);
 
@@ -135,6 +160,17 @@ static inline void __init lge_add_persistent_ram(void)
 }
 #endif
 
+/* from cable_type */
+enum lge_boot_cable_type {
+    LGE_BOOT_LT_CABLE_56K = 6,
+    LGE_BOOT_LT_CABLE_130K,
+    LGE_BOOT_USB_CABLE_400MA,
+    LGE_BOOT_USB_CABLE_DTC_500MA,
+    LGE_BOOT_ABNORMAL_USB_CABLE_400MA,
+    LGE_BOOT_LT_CABLE_910K,
+    LGE_BOOT_NO_INIT_CABLE,
+};
+
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
 void __init lge_add_ramconsole_devices(void);
 #else
@@ -160,6 +196,7 @@ void __init lge_add_qfprom_devices(void);
 #endif
 
 enum lge_boot_mode_type lge_get_boot_mode(void);
+enum lge_boot_cable_type lge_get_boot_cable_type(void);
 int lge_get_factory_boot(void);
 
 #endif // __ASM_ARCH_MSM_BOARD_LGE_H
