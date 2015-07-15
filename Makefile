@@ -1,7 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 4
 SUBLEVEL = 0
-EXTRAVERSION = _Solid_Kernel_V1.9GEEHRC-LP
+EXTRAVERSION = _Solid_Kernel_V1.93GEEHRC-LP
 NAME = Saber-toothed Squirrel
 
 # *DOCUMENTATION*
@@ -192,7 +192,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH		?= arm
-CROSS_COMPILE	?= ../Toolchain/Linaro-4.9.3/bin/arm-eabi-
+CROSS_COMPILE	?= ../Toolchain/Linaro-4.9.4/bin/arm-eabi-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -358,6 +358,7 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
+
 MODFLAGS        = -DMODULE \
                   -mfpu=neon-vfpv4 \
                   -mtune=cortex-a15 \
@@ -386,7 +387,7 @@ AFLAGS_KERNEL	= -mfpu=neon-vfpv4 \
 ifeq ($(ENABLE_GRAPHITE),true)
 AFLAGS_KERNEL	+= -fgraphite -floop-flatten -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 endif
- CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
+CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
@@ -406,7 +407,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -mno-unaligned-access \
 		   -fno-delete-null-pointer-checks \
 		   -pipe
-KBUILD_AFLAGS_KERNEL := -Wa,-mimplicit-it=thumb
+KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
@@ -597,15 +598,11 @@ all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
-endif
-ifdef CONFIG_CC_OPTIMIZE_DEFAULT
+else
 KBUILD_CFLAGS	+= -Ofast
 ifeq ($(ENABLE_GRAPHITE),true)
 KBUILD_CFLAGS	+= -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
 endif
-endif
-ifdef CONFIG_CC_OPTIMIZE_ALOT
-KBUILD_CFLAGS	+= -O3
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile
